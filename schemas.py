@@ -12,7 +12,7 @@ Model name is converted to lowercase for the collection name:
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List, Dict, Any
 
 # Example schemas (replace with your own):
 
@@ -38,11 +38,29 @@ class Product(BaseModel):
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
 
-# Add your own schemas here:
-# --------------------------------------------------
+# App-specific schemas
+class Analysis(BaseModel):
+    """
+    YouTube content analyzer results
+    Collection name: "analysis"
+    """
+    topic: str = Field(..., description="Video topic or idea")
+    keywords: List[str] = Field(default_factory=list, description="List of keywords")
+    niche: Optional[str] = Field(None, description="Content niche")
+    audience: Optional[str] = Field(None, description="Target audience description")
+    format: str = Field(..., description="Angle/format, e.g., tutorial, listicle, case-study")
+    platform: str = Field(..., description="youtube or shorts")
+    region: Optional[str] = Field(None, description="Region or timezone string like GMT+7")
 
-# Note: The Flames database viewer will automatically:
-# 1. Read these schemas from GET /schema endpoint
-# 2. Use them for document validation when creating/editing
-# 3. Handle all database operations (CRUD) directly
-# 4. You don't need to create any database endpoints!
+    # Generated fields
+    seo_title: str
+    hook: str
+    angle: str
+    cta: str
+    description: str
+    hashtags: List[str]
+    post_time: str
+
+    # Scoring
+    score: int
+    criteria: Dict[str, Any]
